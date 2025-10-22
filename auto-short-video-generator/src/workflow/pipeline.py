@@ -35,15 +35,33 @@ class VideoPipeline:
 
         # 初始化LLM客户端
         llm_provider = self.config.get('api.llm_provider', 'openai')
-        api_key = self.config.get_env('OPENAI_API_KEY' if llm_provider == 'openai' else 'ANTHROPIC_API_KEY')
+
+        # 根据provider获取相应的API密钥
+        if llm_provider == 'openai':
+            api_key = self.config.get_env('OPENAI_API_KEY')
+            key_name = 'OPENAI_API_KEY'
+        elif llm_provider == 'anthropic':
+            api_key = self.config.get_env('ANTHROPIC_API_KEY')
+            key_name = 'ANTHROPIC_API_KEY'
+        elif llm_provider == 'coze':
+            api_key = self.config.get_env('COZE_ACCESS_TOKEN')
+            key_name = 'COZE_ACCESS_TOKEN'
+        else:
+            raise ValueError(f"不支持的LLM提供商: {llm_provider}")
 
         if not api_key:
-            raise ValueError(f"未设置API密钥: {'OPENAI_API_KEY' if llm_provider == 'openai' else 'ANTHROPIC_API_KEY'}")
+            raise ValueError(f"未设置API密钥: {key_name}")
 
-        model = self.config.get(f'api.{llm_provider}_model')
-        base_url = self.config.get_env('OPENAI_BASE_URL') if llm_provider == 'openai' else None
-
-        self.llm = LLMClient(llm_provider, api_key, model, base_url)
+        # 根据provider设置相应参数
+        if llm_provider == 'coze':
+            bot_id = self.config.get('api.coze_bot_id')
+            if not bot_id:
+                raise ValueError("未设置Coze Bot ID (api.coze_bot_id)")
+            self.llm = LLMClient(llm_provider, api_key, bot_id=bot_id)
+        else:
+            model = self.config.get(f'api.{llm_provider}_model')
+            base_url = self.config.get_env('OPENAI_BASE_URL') if llm_provider == 'openai' else None
+            self.llm = LLMClient(llm_provider, api_key, model, base_url)
 
         # 初始化各个模块
         self.planner = VideoPlanner(self.config, self.llm)

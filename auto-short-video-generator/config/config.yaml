@@ -2,18 +2,23 @@
 
 # API配置（敏感信息请使用.env文件）
 api:
-  # LLM配置 - 支持 openai, anthropic, local
-  llm_provider: "openai"
+  # LLM配置 - 支持 openai, anthropic, coze
+  llm_provider: "coze"  # 默认使用扣子
   openai_model: "gpt-4-turbo-preview"
   anthropic_model: "claude-3-opus-20240229"
+
+  # 扣子(Coze)配置
+  coze_bot_id: "7563596474257440807"  # Chat机器人ID
+  coze_image_workflow_id: "7563924661450457088"  # 图像生成工作流ID
+  coze_video_workflow_id: "7563925011602915364"  # 视频生成工作流ID（可选）
 
   # TTS配置 - 支持 edge, azure
   tts_provider: "edge"
   edge_voice: "zh-CN-YunxiNeural"  # 男声
   # edge_voice: "zh-CN-XiaoxiaoNeural"  # 女声
 
-  # 图片生成 - 支持 dalle, stable-diffusion, replicate
-  image_provider: "dalle"
+  # 图片生成 - 支持 dalle, coze, stable-diffusion, replicate
+  image_provider: "coze"  # 默认使用扣子
   dalle_model: "dall-e-3"
   image_size: "1792x1024"  # 横屏视频适配
 

@@ -8,6 +8,7 @@ import io
 
 from ..models import Script, AudioSegment, VisualSegment
 from ..llm_client import LLMClient
+from ..coze_client import CozeClient
 from ..utils import ConfigLoader, print_step, ensure_dir
 
 logger = logging.getLogger(__name__)
@@ -31,6 +32,20 @@ class VisualGenerator:
         # 视频配置
         self.resolution = config.get('video.resolution', [1080, 1920])
         self.duration_per_image = config.get('video.duration_per_image', 3)
+
+        # 如果使用Coze，初始化Coze客户端
+        self.coze_client = None
+        if self.provider == 'coze':
+            access_token = config.get_env('COZE_ACCESS_TOKEN')
+            image_workflow_id = config.get('api.coze_image_workflow_id')
+            if access_token and image_workflow_id:
+                self.coze_client = CozeClient(
+                    access_token=access_token,
+                    image_workflow_id=image_workflow_id
+                )
+                logger.info(f"Coze图像生成客户端初始化成功 - Workflow ID: {image_workflow_id}")
+            else:
+                logger.warning("Coze配置不完整，将使用占位图")
 
         logger.info(f"视觉生成器初始化成功 - Provider: {self.provider}")
 
@@ -143,6 +158,8 @@ class VisualGenerator:
         """
         if self.provider == 'dalle':
             self._generate_with_dalle(description, output_path)
+        elif self.provider == 'coze':
+            self._generate_with_coze(description, output_path)
         else:
             # 其他提供商可以在这里扩展
             logger.warning(f"暂不支持 {self.provider}，使用占位图")
@@ -182,6 +199,36 @@ class VisualGenerator:
             f.write(img_data)
 
         logger.debug(f"DALL-E图片生成成功: {output_path}")
+
+    def _generate_with_coze(self, description: str, output_path: str):
+        """使用Coze Workflow生成图片
+
+        Args:
+            description: 场景描述
+            output_path: 输出路径
+        """
+        if not self.coze_client:
+            raise ValueError("Coze客户端未初始化")
+
+        try:
+            # 调用Coze图像生成workflow
+            result = self.coze_client.generate_image(description)
+
+            # 根据返回的结果类型处理
+            if result.startswith('http://') or result.startswith('https://'):
+                # 如果是URL，下载图片
+                img_data = requests.get(result).content
+                with open(output_path, 'wb') as f:
+                    f.write(img_data)
+                logger.debug(f"Coze图片生成成功: {output_path}")
+            else:
+                # 如果不是URL，可能需要其他处理
+                logger.warning(f"Coze返回的结果不是URL: {result}，使用占位图")
+                self._create_placeholder_image(description, output_path)
+
+        except Exception as e:
+            logger.error(f"Coze图片生成失败: {str(e)}")
+            raise
 
     def _create_placeholder_image(self, description: str, output_path: str):
         """创建占位图片

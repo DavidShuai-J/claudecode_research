@@ -94,11 +94,11 @@ flowchart TD
 
 | 模块 | 节点 | 执行工具 |
 |------|------|----------|
-| 🟠 策划 | 主题分析/风格匹配/结构设计 | GPT-4 + 提示词工程 |
-| 🔴 文案 | 文案创作/叙事生成/文案优化 | GPT-4 + 格式处理 |
-| 🟣 标题 | 提取钩子/生成候选/智能评分 | GPT-4 LLM |
-| 🟢 语音 | 文本分割/语音转换/时间对齐 | Edge TTS + Pydub |
-| 🔵 图片 | 场景描述/AI绘图/图片下载 | GPT-4 + DALL-E 3 |
+| 🟠 策划 | 主题分析/风格匹配/结构设计 | Coze Chat / GPT-4 + 提示词工程 |
+| 🔴 文案 | 文案创作/叙事生成/文案优化 | Coze Chat / GPT-4 + 格式处理 |
+| 🟣 标题 | 提取钩子/生成候选/智能评分 | Coze Chat / GPT-4 LLM |
+| 🟢 语音 | 文本分割/语音转换/时间对齐 | Edge TTS + Pydub（免费） |
+| 🔵 图片 | 场景描述/AI绘图/图片下载 | Coze Workflow / DALL-E 3 |
 | 🟡 字幕 | 字幕生成/字幕分段/格式生成 | Python + SRT/ASS |
 | 🟣 视频 | 创建片段/添加字幕/音频合并/编码输出 | MoviePy + FFmpeg |
 
@@ -134,6 +134,7 @@ flowchart TD
    - 自动分段和时间对齐
 
 5. **图片生成** - AI生成历史场景图
+   - 支持扣子(Coze) Workflow（推荐）
    - 支持DALL-E 3
    - 支持Stable Diffusion
    - 智能场景描述
@@ -175,16 +176,45 @@ cp .env.example .env
 
 编辑 `.env` 文件：
 
+#### 方案一：使用扣子(Coze) API（推荐）
+
 ```bash
-# OpenAI API（必需，用于文案生成和图片生成）
+# 扣子 API（推荐，用于文案生成和图片生成）
+COZE_ACCESS_TOKEN=cztei_your-access-token-here
+```
+
+**优势**：
+- ✅ 一个Token同时支持文本和图像生成
+- ✅ 配置简单，只需一个密钥
+- ✅ 支持自定义Bot和Workflow
+
+在 `config/config.yaml` 中配置：
+```yaml
+api:
+  llm_provider: "coze"
+  coze_bot_id: "your_bot_id"  # Chat机器人ID
+  coze_image_workflow_id: "your_workflow_id"  # 图像生成工作流ID
+  image_provider: "coze"
+```
+
+#### 方案二：使用OpenAI API
+
+```bash
+# OpenAI API（用于文案生成和图片生成）
 OPENAI_API_KEY=sk-your-api-key-here
 
 # 可选：使用自定义OpenAI兼容接口
 OPENAI_BASE_URL=https://api.openai.com/v1
+```
 
-# 可选：Anthropic Claude API
+#### 方案三：使用Claude API
+
+```bash
+# Anthropic Claude API
 ANTHROPIC_API_KEY=your-anthropic-key-here
 ```
+
+**注意**：音视频处理使用免费的Edge TTS和本地FFmpeg，无需额外API
 
 ### 4. 运行
 
