@@ -27,8 +27,10 @@ class ConfigLoader:
         load_dotenv()
 
         # 加载配置文件
+        self.base_dir = Path(__file__).parent.parent
+
         if config_path is None:
-            config_path = Path(__file__).parent.parent / "config" / "config.yaml"
+            config_path = self.base_dir / "config" / "config.yaml"
 
         with open(config_path, 'r', encoding='utf-8') as f:
             self.config = yaml.safe_load(f)

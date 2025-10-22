@@ -79,3 +79,68 @@ class VideoProject(BaseModel):
 
     class Config:
         arbitrary_types_allowed = True
+
+
+class DramaScene(BaseModel):
+    """短剧场景信息"""
+
+    index: int = Field(..., description="场景索引，从1开始")
+    heading: str = Field(..., description="场景标题/场记")
+    description: str = Field(..., description="镜头描述")
+    dialogue: List[str] = Field(default_factory=list, description="核心台词")
+
+
+class DramaScript(BaseModel):
+    """短剧脚本结构"""
+
+    concept: str = Field(..., description="用户提供的故事概念")
+    title: str = Field(..., description="剧本标题")
+    genre: str = Field(..., description="题材类型")
+    summary: str = Field(..., description="剧情概述")
+    script_text: str = Field(..., description="完整剧本文字")
+    scenes: List[DramaScene] = Field(default_factory=list, description="场景列表")
+
+
+class RoleProfile(BaseModel):
+    """短剧角色画像"""
+
+    name: str = Field(..., description="角色名称")
+    archetype: str = Field(..., description="角色原型/定位")
+    description: str = Field(..., description="角色简介")
+    motivations: List[str] = Field(default_factory=list, description="角色动机")
+    conflicts: List[str] = Field(default_factory=list, description="主要冲突")
+    image_prompt: str = Field(..., description="角色形象生成提示词")
+    image_url: Optional[str] = Field(default=None, description="角色形象URL")
+
+
+class StoryboardFrame(BaseModel):
+    """分镜帧信息"""
+
+    frame_id: str = Field(..., description="分镜ID")
+    scene_index: int = Field(..., description="所属场景索引")
+    shot_type: str = Field(..., description="镜头机位/景别")
+    visual_description: str = Field(..., description="视觉描述")
+    dialogue: str = Field(..., description="对应台词")
+    style_reference: str = Field(..., description="风格/画面参考")
+
+
+class VideoSlice(BaseModel):
+    """视频切片信息"""
+
+    slice_id: str = Field(..., description="切片ID")
+    frame_id: str = Field(..., description="来源分镜ID")
+    description: str = Field(..., description="切片描述")
+    duration: float = Field(..., description="时长(秒)")
+    asset_url: str = Field(..., description="切片资源URL")
+
+
+class StoryWorkflowResult(BaseModel):
+    """完整短剧工作流输出"""
+
+    project_id: str = Field(..., description="项目ID")
+    concept: str = Field(..., description="用户概念")
+    story: DramaScript = Field(..., description="生成的剧本")
+    roles: List[RoleProfile] = Field(default_factory=list, description="角色列表")
+    storyboard: List[StoryboardFrame] = Field(default_factory=list, description="分镜信息")
+    video_slices: List[VideoSlice] = Field(default_factory=list, description="视频切片")
+    final_video_url: str = Field(..., description="最终视频URL")

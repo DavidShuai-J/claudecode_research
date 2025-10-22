@@ -84,6 +84,39 @@ flowchart TD
 
 ## 节点格式说明
 
+## 短剧分支工作流
+
+为方便在扣子(CoZe)等工作流工具中编排短剧生产，本项目新增 `StoryWorkflowBranch` 分支，步骤如下：
+
+```mermaid
+flowchart LR
+    Concept([🎯 故事概念]) -->|文本| S1[✍️ create_story]
+    S1 -->|剧本文字| S2[🧑‍🤝‍🧑 create_role]
+    S1 -->|剧情结构| S3[🎬 story_board]
+    S2 -->|角色设定| S3
+    S3 -->|分镜脚本| S4[🎞️ video_slice]
+    S4 -->|切片URL列表| S5[📽️ final_output]
+    S5 -->|视频URL| Deliver([✅ 短剧成片])
+
+    style Concept fill:#fff9c4,stroke:#ffc107,stroke-width:2px
+    style S1 fill:#fce4ec,stroke:#e91e63,stroke-width:2px
+    style S2 fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+    style S3 fill:#e0f7fa,stroke:#0097a7,stroke-width:2px
+    style S4 fill:#ede7f6,stroke:#673ab7,stroke-width:2px
+    style S5 fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px
+    style Deliver fill:#c8e6c9,stroke:#4caf50,stroke-width:3px
+```
+
+### 步骤说明
+
+| 节点 | 输入 | 输出 | 说明 |
+|------|------|------|------|
+| create_story | 故事概念 | 完整短剧剧本(JSON) | 由 `StoryCreator` 调用 LLM 输出标题、概述、场景和剧本文字 |
+| create_role | 剧本文字 | 角色列表(JSON) | `RoleGenerator` 拆解关键角色，附带形象提示词和占位图 URL |
+| story_board | 剧本 + 角色 | 分镜列表(JSON) | `StoryboardDesigner` 生成镜头机位、画面描述与台词 |
+| video_slice | 分镜信息 | 切片URL列表 | `VideoSlicePlanner` 将分镜映射到视频切片资源 |
+| final_output | 切片URL列表 | 最终视频URL | `FinalAssembler` 汇总切片形成最终视频占位地址 |
+
 ### 🎨 统一格式规范
 
 每个节点采用简洁格式（≤10字）：
