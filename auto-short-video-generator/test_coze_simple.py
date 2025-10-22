@@ -3,7 +3,7 @@ import requests
 import json
 
 # 配置
-ACCESS_TOKEN = "cztei_lvae6PbLhkIHRcHkT4xiQ4X8gPfEwXClxFqwZpP7dhfOYuoBeS2khIwDTZJllefQg"
+ACCESS_TOKEN = "pat_iRAbnGWILCaudRctPMkZ8fFGuH9xxoiz4CtHsGBhGwGlVrdgB3nS2o8KvOrOImrL"
 BOT_ID = "7563596474257440807"
 IMAGE_WORKFLOW_ID = "7563924661450457088"
 
