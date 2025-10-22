@@ -15,6 +15,7 @@ from ..tts import TTSEngine
 from ..visual import VisualGenerator
 from ..subtitle import SubtitleGenerator
 from ..compositor import VideoCompositor
+from .story_branch import StoryWorkflowBranch
 
 logger = logging.getLogger(__name__)
 
@@ -71,6 +72,7 @@ class VideoPipeline:
         self.visual_generator = VisualGenerator(self.config, self.llm)
         self.subtitle_generator = SubtitleGenerator(self.config)
         self.video_compositor = VideoCompositor(self.config)
+        self.story_branch = StoryWorkflowBranch(self.config, self.llm)
 
         print_step("所有模块初始化完成", "完成")
         logger.info("VideoPipeline初始化成功")
@@ -161,6 +163,16 @@ class VideoPipeline:
             logger.error(f"视频生成失败: {str(e)}", exc_info=True)
             print_section("❌ 视频生成失败")
             raise
+
+    def generate_story_workflow(
+        self, concept: str, project_id: Optional[str] = None
+    ):
+        """运行短剧完整流程分支"""
+
+        print_section(f"开始短剧工作流: {concept}")
+        result = self.story_branch.run(concept, project_id)
+        print_section("✅ 短剧工作流完成！")
+        return result
 
     def _save_script(self, project: VideoProject):
         """保存文案到文件
