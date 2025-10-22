@@ -3,7 +3,7 @@
 # API配置（敏感信息请使用.env文件）
 api:
   # LLM配置 - 支持 openai, anthropic, coze
-  llm_provider: "coze"  # 默认使用扣子
+  llm_provider: "openai"  # 使用 OpenAI
   openai_model: "gpt-4-turbo-preview"
   anthropic_model: "claude-3-opus-20240229"
 
@@ -18,7 +18,7 @@ api:
   # edge_voice: "zh-CN-XiaoxiaoNeural"  # 女声
 
   # 图片生成 - 支持 dalle, coze, stable-diffusion, replicate
-  image_provider: "coze"  # 默认使用扣子
+  image_provider: "dalle"  # 使用 DALL-E 3
   dalle_model: "dall-e-3"
   image_size: "1792x1024"  # 横屏视频适配
 
