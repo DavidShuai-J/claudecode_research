@@ -28,18 +28,18 @@ flowchart TD
     D --> D1[文案分段处理<br/>清理特殊符号]
     D1 --> D2[Edge TTS生成音频<br/>支持多种中文语音]
     D2 --> D3[自动时间对齐<br/>合并音频片段]
-    D3 --> D4[输出: AudioSegment[]<br/>MP3音频文件]
+    D3 --> D4[输出: AudioSegment<br/>MP3音频文件列表]
 
     B3 --> E[图片生成模块<br/>Visual Generator]
     E --> E1[LLM生成场景描述<br/>根据文案内容]
     E1 --> E2[DALL-E 3生成图片<br/>1792x1024横屏]
     E2 --> E3[失败降级处理<br/>使用占位图]
-    E3 --> E4[输出: VisualSegment[]<br/>PNG场景图片]
+    E3 --> E4[输出: VisualSegment<br/>PNG场景图片列表]
 
     D4 --> F[字幕生成模块<br/>Subtitle Generator]
     F --> F1[根据音频时间<br/>自动分段对齐]
     F1 --> F2[生成SRT/ASS格式<br/>自定义样式]
-    F2 --> F3[输出: SubtitleSegment[]<br/>字幕文件]
+    F2 --> F3[输出: SubtitleSegment<br/>字幕文件列表]
 
     D4 --> G[视频合成模块<br/>Compositor]
     E4 --> G
