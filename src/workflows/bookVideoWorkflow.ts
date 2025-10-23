@@ -1,4 +1,4 @@
-import { createWorkflow, createStep } from '@mastra/core';
+import { createWorkflow, createStep } from '../core/mastra';
 import { z } from 'zod';
 import { CozeClient } from '../utils/cozeClient';
 import dotenv from 'dotenv';

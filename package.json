@@ -1,7 +1,7 @@
 {
   "name": "douyin-book-video-workflow",
   "version": "1.0.0",
-  "description": "翻页书单号视频生成工作流 - 基于 Mastra 框架",
+  "description": "翻页书单号视频生成工作流 - 基于 Mastra 风格框架",
   "main": "dist/api/server.js",
   "scripts": {
     "dev": "ts-node src/api/server.ts",
@@ -13,7 +13,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@mastra/core": "^0.1.0",
     "express": "^4.18.2",
     "zod": "^3.22.4",
     "axios": "^1.6.0",
